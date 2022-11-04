@@ -8,8 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 
 namespace APIreq
@@ -28,19 +27,19 @@ namespace APIreq
 
         private async void reqButton_Click(object sender, EventArgs e)
         {
-            ReqData request = new ReqData();
+            var request = new ReqData();
             String output = await request.getWeatherData();
-            //var outJson = JsonSerializer.Serialize(output);
-            outputTextbox.Text = output;
-        }
+            FormatData parsed = JsonConvert.DeserializeObject<FormatData>(output);
+            string json = JsonConvert.SerializeObject(parsed, Formatting.Indented);
+            Console.WriteLine(parsed.Current.Weather);
 
-        private void outputTextbox_TextChanged(object sender, EventArgs e)
-        {
-            
+            //outputTextbox.Text = Helper.ConvertUnixTimeStamp(parsed.Current.Dt).Value.ToString("MM/dd/yyyy hh:mm tt z");
+            //outputTextbox.Text = parsed.Current.CurrentWeather.Description;
         }
 
         private async void exportButton_Click(object sender, EventArgs e)
         {
+            /*
             if(outputTextbox.Text != "")
             {
                 await File.WriteAllTextAsync("WriteText.txt", outputTextbox.Text);
@@ -50,12 +49,12 @@ namespace APIreq
             {
                 MessageBox.Show("Data output empty");
             }
-            
+            */
         }
 
         private void clearButton_Click(object sender, EventArgs e)
         {
-            outputTextbox.Text = "";    
+            //outputTextbox.Text = "";    
         }
     }
 }
